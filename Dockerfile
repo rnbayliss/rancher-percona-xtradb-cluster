@@ -1,19 +1,19 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
-MAINTAINER Manel Martinez <manel@nixelsolutions.com>
+MAINTAINER Rich Bayliss <richbayliss@gmail.com>
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN echo "deb http://repo.percona.com/apt trusty main" > /etc/apt/sources.list.d/percona.list
-RUN echo "deb-src http://repo.percona.com/apt trusty main" >> /etc/apt/sources.list.d/percona.list
+RUN echo "deb http://repo.percona.com/apt xenial main" > /etc/apt/sources.list.d/percona.list
+RUN echo "deb-src http://repo.percona.com/apt xenial main" >> /etc/apt/sources.list.d/percona.list
 
 RUN apt-key adv --keyserver pgp.mit.edu --recv-keys 1C4CBDCDCD2EFD2A
 RUN apt-get update && \
-    apt-get -y install percona-xtradb-cluster-56 pwgen supervisor openssh-server sshpass xinetd dnsutils wget
+    apt-get -y install percona-xtradb-cluster-57 pwgen supervisor openssh-server sshpass xinetd dnsutils wget
 
 ENV PXC_SST_PASSWORD **ChangeMe**
 ENV PXC_ROOT_PASSWORD **ChangeMe**
-env PXC_INIT_SQL **ChangeMe**
+ENV PXC_INIT_SQL **ChangeMe**
 ENV SERVICE_NAME pxc
 ENV SERVICE_NODE_COUNT 3
 ENV NODE_COUNT_FIRST_RETRY_SECONDS 60
