@@ -4,19 +4,23 @@ MAINTAINER Rich Bayliss <richbayliss@gmail.com>
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# install Percona XtraDB Cluster 5.7
 RUN echo "deb http://repo.percona.com/apt xenial main" > /etc/apt/sources.list.d/percona.list
 RUN echo "deb-src http://repo.percona.com/apt xenial main" >> /etc/apt/sources.list.d/percona.list
 
-RUN apt-key adv --keyserver pgp.mit.edu --recv-keys 1C4CBDCDCD2EFD2A
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8507EFA5
 RUN apt-get update && \
     apt-get -y install percona-xtradb-cluster-57 pwgen supervisor openssh-server sshpass xinetd dnsutils wget
 
+RUN service mysql stop
+	
+# configure some ENV variables
 ENV PXC_SST_PASSWORD **ChangeMe**
 ENV PXC_ROOT_PASSWORD **ChangeMe**
 ENV PXC_INIT_SQL **ChangeMe**
 ENV SERVICE_NAME pxc
 ENV SERVICE_NODE_COUNT 3
-ENV NODE_COUNT_FIRST_RETRY_SECONDS 60
+ENV NODE_COUNT_FIRST_RETRY_SECONDS 10
 ENV NODE_COUNT_SECOND_RETRY_SECONDS 180
 
 ENV PXC_VOLUME /var/lib/mysql
@@ -42,8 +46,12 @@ RUN mkdir -p /usr/local/bin
 RUN echo "mysqlchk ${MYSQLCHK_PORT}/tcp #mysqlchk" >> /etc/services
 ADD ./bin /usr/local/bin
 RUN chmod +x /usr/local/bin/*.sh
+ADD ./etc/mysql/conf.d/pxc.cnf /etc/mysql/conf.d/pxc.cnf
+RUN chown mysql:mysql /etc/mysql/conf.d/*
+RUN chmod 600 /etc/mysql/conf.d/*
 ADD ./etc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD ./etc/supervisord_bootstrap.conf /etc/supervisor/conf.d/supervisord_bootstrap.conf
-ADD ./etc/mysql/conf.d/pxc.cnf /etc/mysql/conf.d/pxc.cnf
+
+
 
 CMD ["/usr/local/bin/run.sh"]

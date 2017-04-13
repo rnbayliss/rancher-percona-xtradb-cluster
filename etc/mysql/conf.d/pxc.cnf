@@ -1,30 +1,33 @@
 [mysqld]
-bind-address =0.0.0.0
-wsrep_provider=/usr/lib/libgalera_smm.so
-
-# Cluster connection URL contains the IPs of node#1, node#2 and node#3
-wsrep_cluster_address=gcomm://
-
-# In order for Galera to work correctly binlog format should be ROW
-binlog_format=ROW
+user = mysql
+port = 3306
+bind-address = 0.0.0.0
+wsrep_provider = /usr/lib/libgalera_smm.so
 
 # MyISAM storage engine has only experimental support
-default_storage_engine=InnoDB
+default_storage_engine = InnoDB
 
 # This changes how InnoDB autoincrement locks are managed and is a requirement for Galera
-innodb_autoinc_lock_mode=2
+innodb_autoinc_lock_mode = 2 
 
-# Node #1 address
-wsrep_node_address=MY_RANCHER_IP
+# In order for Galera to work correctly binlog format should be ROW
+binlog_format = ROW
 
-# SST method
-wsrep_sst_method=xtrabackup-v2
+# My address and hostname
+wsrep_node_address = MY_RANCHER_IP
+wsrep_node_name = MY_HOSTNAME
+
+# Cluster connection URL contains the IPs of all nodes
+wsrep_cluster_address = gcomm://
 
 # Cluster name
-wsrep_cluster_name=pxc_rancher
+wsrep_cluster_name = pxc_rancher
+
+# SST method
+wsrep_sst_method = xtrabackup-v2
 
 # Authentication for SST method
-wsrep_sst_auth="sstuser:PXC_SST_PASSWORD"
+wsrep_sst_auth = "sstuser:PXC_SST_PASSWORD"
 
 # Recommended settings for WAN replication
-wsrep_provider_options="evs.keepalive_period=PT3S;evs.suspect_timeout=PT30S;evs.inactive_timeout=PT1M;evs.install_timeout=PT1M"
+wsrep_provider_options = "evs.keepalive_period=PT3S;evs.suspect_timeout=PT30S;evs.inactive_timeout=PT1M;evs.install_timeout=PT1M"

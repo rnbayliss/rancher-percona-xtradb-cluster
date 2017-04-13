@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  pxc:
+    build: .
+    image: richbayliss/pxc:5.7
+    networks:
+      - default
+    environment:
+      - PXC_SST_PASSWORD=password
+      - PXC_ROOT_PASSWORD=password
